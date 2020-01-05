@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #box{
+            width: 400px;
+            height: 150px;
+            background: lavenderblush;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0px 1px 2px rgba(0,0,0,.5);
+        }
+        #box p{
+            text-align: center;
+            line-height: 150px;
+        }
+        #box .btns{
+            width: 100%;
+            height: 40px;
+            /* background: red; */
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            justify-content:flex-end;
+           
+        }
+        .btns .di,.qu{
+            width: 60px;
+            height: 100%;
+            background: rosybrown;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-right: 20px;
+            }
+           
+            /* 初始位置 */
+            /* .n-enter{
+               
+                transform:translateY(-500px);
+            }
+            /* 运动过程 */
+            /* .n-enter-active{
+               
+                transition: .8s;
+            }  */
+    </style>
+</head>
+<body>
+    <div id="app">
+        <button
+            @click="changOnoff"
+        >弹框</button>
+            <transition 
+            name="n"
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @after-enter="afterEnter"
+            @before-leave="beforeLeave"
+            @leave="leave"
+            @after-leave="afterLeave"
+            >
+                <ppa
+                    v-show="onoff"
+                    :of="onoff"
+                    @coff="changOnoff"
+                >
+                <template slot="content">
+                    <p>你好</p>
+                </template>
+            </ppa>
+            </transition>
+            <transition>
+                <div class="shadow" v-show="onoff"></div>
+            </transition>
+    </div>
+    <template id="tk">
+        <div>
+            <div id="box">
+                <div class="txt">
+                    <div>
+                        <slot name="content"></slot>
+                    </div>
+                </div>
+                <div class="btns">
+                    <div 
+                    class="di"
+                    @click="off">确定</div>
+                    <div 
+                    class="qu"
+                    @click="off">取消</div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="vue.js"></script>
+    <script>
+        const ppa = {
+            template:'#tk',
+            props:['of'],
+            methods: {
+                off(){
+                    this.$emit('coff');
+                }
+            },
+        }
+       new Vue({
+           el:'#app',
+           data:{
+               onoff:false
+           },
+           methods: {
+               changOnoff(){
+                   this.onoff = !this.onoff;
+               },
+               beforeEnter(ele){
+                ele.style.position = 'relative';
+                ele.style.zIndex = 999;
+                ele.style.transition = '.5s';
+                ele.style.transform = 'translateY(0)';
+               },
+               enter(ele){
+                ele.style.zIndex = 999;
+                // ele.children[0].style.zIndex = 999;
+                ele.offsetLeft;
+                ele.style.transition = '.5s';
+                ele.style.transform = 'translateY(200px)';
+            },
+            afterEnter(ele){
+                // ele.style.opacity = '0';
+            },
+            beforeLeave(ele){
+                ele.style.position = 'relative';
+                ele.style.zIndex = 999;
+                ele.style.transform = 'translateY(200px)';
+            },
+            leave(ele){
+                ele.offsetLeft;
+                ele.style.transition = '.5s';
+                ele.style.transform = 'translateY(-200px)';
+            },
+           },
+           components:{
+               ppa
+           }
+       })
+    </script>
+</body>
+</html>
